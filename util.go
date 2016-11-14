@@ -16,6 +16,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/credentials/stscreds"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/route53"
 )
@@ -37,9 +38,12 @@ func qualifyName(name, origin string) string {
 func getConfig(c *cli.Context) *aws.Config {
 	debug := c.Bool("debug")
 	profile := c.String("profile")
+	assume_role_arn := c.String("assume_role_arn")
 	config := aws.Config{}
 	if profile != "" {
 		config.Credentials = credentials.NewSharedCredentials("", profile)
+	} else if assume_role_arn != "" {
+		config.Credentials = stscreds.NewCredentials(session.New(), assume_role_arn)
 	}
 	// ensures throttled requests are retried
 	config.MaxRetries = aws.Int(100)

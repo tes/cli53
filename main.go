@@ -26,6 +26,10 @@ func Main(args []string) int {
 			Name:  "profile",
 			Usage: "profile to use from credentials file",
 		},
+		cli.StringFlag{
+			Name:  "assume_role_arn",
+			Usage: "the ARN of an IAM role to assume prior to making API calls",
+		},
 	}
 
 	app := cli.NewApp()
